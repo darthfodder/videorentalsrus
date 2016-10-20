@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.videorentalsrus.dao.RentalDao">
+	<resultMap type="Rental" id="RentalResultMap">
+		<id column="rentalId" property="rentalId" />
+		<result column="rentalVideoId" property="rentalVideoId" />
+		<result column="rentalCustomerId" property="rentalCustomerId" />
+		<result column="rentalDate" property="rentalDate" />
+		<result column="returnedDate" property="returnedDate" />
+		<result column="dueDate" property="dueDate" />
+	</resultMap>
+	
+	<sql id="rentalColumns">
+		rental.rentalId AS rentalId,
+		rental.rentalVideoId AS videoId,
+		rental.rentalCustomerId AS customerId,
+		rental.rentalDate AS rentalDate,
+		rental.returnedDate AS returnedDate,
+		rental.dueDate AS dueDate
+	</sql>
+	
+	<select id="getRental" resultMap="RentalResultMap">
+		SELECT <include refid="rentalColumns" />
+		FROM dbo.rentals as rental
+		WHERE rental.rentalId = #{rentalId}
+	</select>
+	
+	<select id="getAllRentals" resultMap="RentalResultMap">
+		SELECT <include refid="rentalColumns" />
+		FROM dbo.rentals as rental
+	</select>
+	
+	<select id="getActiveRentals" resultMap="RentalResultMap">
+		SELECT <include refid="rentalColumns" />
+		FROM dbo.rentals as rental
+		WHERE rental.returnedDate IS NULL
+	</select>
+	
+	<insert id="insertRental" parameterType="Rental" useGeneratedKeys="true" keyProperty="rentalId">
+		INSERT INTO dbo.rentals(rentalVideoId,rentalCustomerId,rentalDate,returnedDate,dueDate)
+		VALUES(#{rentalVideoId},#{rentalCustomerId},#{rentalDate},#{returnedDate},#{dueDate})
+	</insert>
+	
+	<update id="updateRental" parameterType="Rental">
+		UPDATE dbo.rentals
+			SET returnedDate = #{returnedDate},
+			dueDate = #{dueDate}
+		WHERE rentalId = #{rentalId}
+	</update>
+</mapper>

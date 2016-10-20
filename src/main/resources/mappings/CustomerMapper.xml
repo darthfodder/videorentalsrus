@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.videorentalsrus.dao.CustomerDao">
+	<resultMap type="Customer" id="CustomerResultMap">
+		<id column="customerId" property="customerId" />
+		<result column="firstName" property="firstName" />
+		<result column="lastName" property="lastName" />
+		<result column="phoneNumber" property="phoneNumber" />
+		<result column="streetAddress" property="streetAddress" />
+		<result column="zipCode" property="zipCode" />
+		<result column="balance" property="balance" />
+	</resultMap>
+	
+	<sql id="customerColumns">
+		customer.customerId AS customerId,
+		customer.firstName AS firstName,
+		customer.lastName AS lastName,
+		customer.phoneNumber AS phoneNumber,
+		customer.streetAddress AS streetAddress,
+		customer.zipCode AS zipCode,
+		customer.balance AS balance
+	</sql>
+	
+	<select id="getCustomer" resultMap="CustomerResultMap" parameterType="int">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.customerId = #{customerId}
+	</select>
+	
+	<select id="getAllCustomers" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+	</select>
+	
+	<select id="findCustomersByFullName" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.firstName = #{firstName}
+		AND customer.lastName = #{lastName}
+	</select>
+	
+	<select id="findCustomersByLastName" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.lastName = #{lastName}
+	</select>
+	
+	<select id="findCustomersByPhoneNumber" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.phoneNumber = #{phoneNumber}
+	</select>
+	
+	<select id="findCustomersByStreetAddress" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.streetAddress = #{streetAddress}
+	</select>
+	
+	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="customerId">
+		INSERT INTO dbo.customers(firstName,lastName,phoneNumber,streetAddress,zipCode,balance)
+		VALUES(#{firstName},#{lastName},#{phoneNumber},#{streetAddress},#{zipCode},0)
+	</insert>
+	
+	<update id="updateCustomer" parameterType="Customer">
+		UPDATE dbo.customers
+			SET firstName = #{firstName},
+			lastName = #{lastName},
+			phoneNumber = #{phoneNumber},
+			streetAddress = #{streetAddress},
+			zipCode = #{zipCode},
+			balance = #{balance}
+		WHERE customerId = #{customerId}
+	</update>
+	
+	<select id="getRentalHistory" resultMap="com.videorentalsrus.dao.RentalDao.RentalResultMap" parameterType="Customer">
+		SELECT <include refid="com.videorentalsrus.dao.RentalDao.rentalColumns" />
+		FROM dbo.rentals as rental
+		JOIN dbo.customers as customer
+		ON rental.rentalCustomerId = customer.customerId
+		WHERE customer.customerId = #{customerId}
+	</select>
+	
+	<select id="getActiveRentals" resultMap="com.videorentalsrus.dao.RentalDao.RentalResultMap" parameterType="Customer">
+		SELECT <include refid="com.videorentalsrus.dao.RentalDao.rentalColumns" />
+		FROM dbo.rentals as rental
+		JOIN dbo.customers as customer
+		ON rental.rentalCustomerId = customer.customerId
+		WHERE customer.customerId = #{customerId}
+		AND rental.returnedDate IS NULL
+	</select>
+</mapper>

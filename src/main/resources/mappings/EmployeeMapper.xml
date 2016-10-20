@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.videorentalsrus.dao.EmployeeDao">
+	<resultMap type="Employee" id="EmployeeResultMap">
+		<id column="employeeId" property="employeeId" />
+		<result column="employeeRoleId" property="employeeRoleId" />
+		<result column="firstName" property="firstName" />
+		<result column="lastName" property="lastName" />
+		<result column="phoneNumber" property="phoneNumber" />
+		<result column="streetAddress" property="streetAddress" />
+		<result column="zipCode" property="zipCode" />
+	</resultMap>
+	
+	<resultMap type="EmployeeRole" id="EmployeeRoleResultMap">
+		<id column="employeeRoleId" property="employeeRoleId" />
+		<result column="employeeRolePermissionId" property="employeeRolePermissionId" />
+		<result column="roleName" property="roleName" />
+	</resultMap>
+	
+	<resultMap type="EmployeePermission" id="EmployeePermissionResultMap">
+		<id column="employeePermissionId" property="employeePermissionId" />
+		<result column="canAddVideo" property="canAddVideo" />
+		<result column="canDeleteVideo" property="canDeleteVideo" />
+		<result column="canRentVideo" property="canRentVideo" />
+		<result column="canDeleteRental" property="canDeleteRental" />
+		<result column="canDischareBalance" property="canDischareBalance" />
+		<result column="canAddEmployee" property="canAddEmployee" />
+		<result column="canRemoveEmployee" property="canRemoveEmployee" />
+		<result column="canUpdateVideoStatus" property="canUpdateVideoStatus" />
+		<result column="canUpdateCustomer" property="canUpdateCustomer" />
+	</resultMap>
+	
+	<sql id="employeeColumns">
+		employee.employeeId AS employeeId,
+		employee.firstName AS firstName,
+		employee.lastName AS lastName,
+		employee.phoneNumber AS phoneNumber,
+		employee.streetAddress AS streetAddress,
+		employee.zipCode AS zipCode,
+		employee.employeeRoleId AS employeeRoleId
+	</sql>
+	
+	<sql id="employeeRoleColumns">
+		role.employeeRoleId AS employeeRoleId,
+		role.employeeRolePermissionId AS rolePermissionId,
+		role.roleName AS roleName
+	</sql>
+	
+	<sql id="employeePermissionColumns">
+		permission.employeePermissionId AS permissionId,
+		permission.canAddVideo AS canAddVideo",
+		permission.canDeleteVideo AS canDeleteVideo,
+		permission.canRentVideo AS canRentVideo,
+		permission.canDeleteRental AS can,teRental,
+		permission.canDischareBalance AS canDischareBalance,
+		permission.canAddEmployee AS canAddEmployee,
+		permission.canRemoveEmployee AS canRemoveEmployee,
+		permission.canUpdateVideoStatus AS canUpdateVideoStatus,
+		permission.canUpdateCustomer AS canUpdateCustomer
+	</sql>
+	
+	<select id="getEmployee" resultMap="EmployeeResultMap" parameterType="int">
+		SELECT <include refid="employeeColumns" />
+		FROM dbo.employees as employee
+		WHERE employee.employeeId = #{employeeId}
+	</select>
+	
+	<select id="getAllEmployees" resultMap="EmployeeResultMap">
+		SELECT <include refid="employeeColumns" />
+		FROM dbo.employees as employee
+	</select>
+	
+	<select id="findEmployeesByName" resultMap="EmployeeResultMap">
+		SELECT <include refid="employeeColumns" />
+		FROM dbo.employees as employee
+		WHERE employee.firstName = #{firstName}
+		AND employee.lastName = #{lastName}
+	</select>
+	
+	<select id="findEmployeesByRole" resultMap="EmployeeResultMap" parameterType="string">
+		SELECT <include refid="employeeColumns" />
+		FROM dbo.employees as employee
+			INNER JOIN dbo.employeeRoles as role
+			ON employee.employeeRoleId = role.employeeRoleId
+		WHERE role.roleName = #{roleName}
+	</select>
+	
+	<select id="getEmployeeRole" resultMap="EmployeeRoleResultMap" parameterType="Employee">
+		SELECT <include refid="employeeRoleColumns"/>
+		FROM dbo.employees as employee
+			INNER JOIN dbo.employeeRoles as role
+			ON employee.employeeRoleId = roleId
+		WHERE employee.employeeId = #{employeeId}
+	</select>
+	
+	<select id="getEmployeePermissions" resultMap="EmployeePermissionResultMap" parameterType="Employee">
+		SELECT <include refid="employeePermissionColumns" />
+		FROM dbo.employees as employee
+			INNER JOIN dbo.employeeRoles as role
+				ON employee.employeeRoleId = role.employeeRoleId
+			INNER JOIN stote.dbo.employeePermissions as permission
+				ON role.employeePermissionId = permissionId
+		WHERE employee.employeeId = #{employeeId}
+	</select>
+	
+	<insert id="insertEmployee" parameterType="Employee" useGeneratedKeys="true" keyProperty="employeeId">
+		INSERT INTO dbo.employees(firstName,lastName,phoneNumber,streetAddress,zipCode,employeeRoleId)
+		VALUES(#{firstName},#{lastName},#{phoneNumber},#{streetAddress},#{zipCode},#{employeeRoleId})
+	</insert>
+	
+	<insert id="insertEmployeeRole" parameterType="EmployeeRole" useGeneratedKeys="true" keyProperty="employeeRoleId">
+		INSERT INTO dbo.employeeRoles(roleName,employeeRolePermissionId)
+		VALUES(#{roleName},#{employeeRolePermissionId})
+	</insert>
+	
+	<update id="updateEmployee" parameterType="Employee">
+		UPDATE dbo.employees
+			SET firstName = #{firstName},
+			lastName = #{lastName},
+			phoneNumber = #{phoneNumber},
+			streetAddress = #{streetAddress},
+			zipCode = #{zipCode},
+			employeeRoleId = #{employeeRoleId}
+		WHERE employeeId = #{employeeId}
+	</update>
+	
+	<update id="updateEmployeeRole" parameterType="EmployeeRole">
+		UPDATE dbo.employeeRoles
+			SET roleName = #{roleName},
+			employeeRolePermissionId = #{employeeRolePermissionId}
+		WHERE employeeRoleId = #{employeeRoleId}
+	</update>
+</mapper>
