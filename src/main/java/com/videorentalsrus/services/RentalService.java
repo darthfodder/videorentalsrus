@@ -10,6 +10,7 @@ public interface RentalService {
 	
 	public Rental rentVideo(Video video, Customer customer);
 	public Rental returnVideo(Video video);
+	public Rental deleteRental(Rental rental);
 	public Rental getRentalById(int id);
 	public Video getVideoOfRental(Rental rental);
 	public Rental getMostRecentVideoRental(Video video);

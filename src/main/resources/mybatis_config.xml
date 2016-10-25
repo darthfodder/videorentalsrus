@@ -5,16 +5,12 @@
 <configuration>
 	<typeAliases>
 		<typeAlias type="com.videorentalsrus.store.Customer" alias="Customer"/>
-		<typeAlias type="com.videorentalsrus.store.Employee" alias="Employee"/>
-		<typeAlias type="com.videorentalsrus.store.EmployeePermission" alias="EmployeePermission"/>
-		<typeAlias type="com.videorentalsrus.store.EmployeeRole" alias="EmployeeRole"/>
 		<typeAlias type="com.videorentalsrus.store.Rental" alias="Rental"/>
 		<typeAlias type="com.videorentalsrus.store.RentalType" alias="RentalType"/>
 		<typeAlias type="com.videorentalsrus.store.Video" alias="Video"/>
 	</typeAliases>
 	<mappers>
 		<mapper resource="mappings/CustomerMapper.xml"/>
-		<mapper resource="mappings/EmployeeMapper.xml"/>
 		<mapper resource="mappings/RentalMapper.xml"/>
 		<mapper resource="mappings/VideoMapper.xml"/>
 	</mappers>

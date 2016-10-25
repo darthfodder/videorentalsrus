@@ -4,7 +4,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.videorentalsrus.dao.RentalDao">
+<mapper namespace="com.videorentalsrus.dao.RentalMapper">
 	<resultMap type="Rental" id="RentalResultMap">
 		<id column="rentalId" property="rentalId" />
 		<result column="rentalVideoId" property="rentalVideoId" />
@@ -16,8 +16,8 @@
 	
 	<sql id="rentalColumns">
 		rental.rentalId AS rentalId,
-		rental.rentalVideoId AS videoId,
-		rental.rentalCustomerId AS customerId,
+		rental.rentalVideoId AS rentalVideoId,
+		rental.rentalCustomerId AS rentalCustomerId,
 		rental.rentalDate AS rentalDate,
 		rental.returnedDate AS returnedDate,
 		rental.dueDate AS dueDate
@@ -51,4 +51,9 @@
 			dueDate = #{dueDate}
 		WHERE rentalId = #{rentalId}
 	</update>
+	
+	<delete id="deleteRental" parameterType="Rental">
+		DELETE FROM dbo.rentals as rental 
+		WHERE rental.rentalId = #{rentalId}
+	</delete>
 </mapper>

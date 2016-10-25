@@ -23,6 +23,8 @@ public interface VideoService {
 	
 	public List<Video> getVideosByGenre(String genre);
 	
+	public List<Video> getVideosByRentalType(String rentalType);
+	
 	public List<Video> getVideosByRentalType(RentalType rentalType);
 	
 	public Video getVideoById(int id);
@@ -33,7 +35,11 @@ public interface VideoService {
 	
 	public RentalType getRentalTypeById(int id);
 	
+	public List<RentalType> getRentalTypes();
+	
 	public Boolean isVideoAvailable(Video video);
+	
+	public Boolean isVideoRented(Video video);
 
 	public List<Video> getAvailableVideosMatchingTitle(String title);
 
@@ -41,6 +47,8 @@ public interface VideoService {
 
 	public List<Video> getAvailableVideosByGenre(String genre);
 
+	public List<Video> getAvailableVideosByRentalType(String rentalType);
+	
 	public List<Video> getAvailableVideosByRentalType(RentalType rentalType);
 	
 	public List<Rental> getRentalHistory(Video video);

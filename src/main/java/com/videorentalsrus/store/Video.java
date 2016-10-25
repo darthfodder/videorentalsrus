@@ -51,5 +51,24 @@ public class Video implements Serializable{
 	public void setVideoRentalTypeId(Integer videoRentalTypeId) {
 		this.videoRentalTypeId = videoRentalTypeId;
 	}
-
+	
+	@Override
+	public boolean equals(Object other) {
+		if(this == other)
+		{
+			return true;
+		}
+		
+		if(other == null || this.getClass() != other.getClass())
+		{
+			return false;
+		}
+		Video otherVideo = (Video)other;
+		return videoId.equals(otherVideo.videoId);
+	}
+	
+	@Override
+	public int hashCode() {
+		return videoId == null ? 0 : videoId.hashCode();
+	}
 }

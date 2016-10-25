@@ -15,8 +15,10 @@ public interface CustomerDao {
 	public List<Customer> getAllCustomers();
 	public List<Customer> findCustomersByFullName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 	public List<Customer> findCustomersByLastName(String lastName);
+	public Customer findCustomersByFirstName(String firstName);
 	public List<Customer> findCustomersByPhoneNumber(String phoneNumber);
 	public List<Customer> findCustomersByStreetAddress(String streetAddress);
+	public List<Customer> findCustomersByZipCode(String zipCode);
 	public void insertCustomer(Customer customer);
 	public void updateCustomer(Customer customer);
 	public List<Rental> getRentalHistory(Customer customer);

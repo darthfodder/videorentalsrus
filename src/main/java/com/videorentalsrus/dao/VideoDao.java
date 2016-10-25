@@ -22,7 +22,7 @@ public interface VideoDao {
 	public List<Video> findVideosByTitle(String title);
 	public List<Video> findVideosByGenre(String genre);
 	public List<Video> findVideosByYear(int year);
-	public List<Video> findVideosByRentalType(RentalType rentalType);
+	public List<Video> findVideosByRentalType(String rentalType);
 	public void insertVideo(Video video);
 	public void updateVideo(Video video);
 	public List<Rental> getRentalHistory(Video video);

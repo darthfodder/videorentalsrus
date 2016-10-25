@@ -49,6 +49,12 @@
 		WHERE customer.lastName = #{lastName}
 	</select>
 	
+	<select id="findCustomersByFirstName" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.firstName = #{firstName}
+	</select>
+	
 	<select id="findCustomersByPhoneNumber" resultMap="CustomerResultMap">
 		SELECT <include refid="customerColumns" />
 		FROM dbo.customers as customer
@@ -59,6 +65,12 @@
 		SELECT <include refid="customerColumns" />
 		FROM dbo.customers as customer
 		WHERE customer.streetAddress = #{streetAddress}
+	</select>
+	
+	<select id="findCustomersByZipCode" resultMap="CustomerResultMap">
+		SELECT <include refid="customerColumns" />
+		FROM dbo.customers as customer
+		WHERE customer.zipCode = #{zipCode}
 	</select>
 	
 	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="customerId">
@@ -77,16 +89,16 @@
 		WHERE customerId = #{customerId}
 	</update>
 	
-	<select id="getRentalHistory" resultMap="com.videorentalsrus.dao.RentalDao.RentalResultMap" parameterType="Customer">
-		SELECT <include refid="com.videorentalsrus.dao.RentalDao.rentalColumns" />
+	<select id="getRentalHistory" resultMap="com.videorentalsrus.dao.RentalMapper.RentalResultMap" parameterType="Customer">
+		SELECT <include refid="com.videorentalsrus.dao.RentalMapper.rentalColumns" />
 		FROM dbo.rentals as rental
 		JOIN dbo.customers as customer
 		ON rental.rentalCustomerId = customer.customerId
 		WHERE customer.customerId = #{customerId}
 	</select>
 	
-	<select id="getActiveRentals" resultMap="com.videorentalsrus.dao.RentalDao.RentalResultMap" parameterType="Customer">
-		SELECT <include refid="com.videorentalsrus.dao.RentalDao.rentalColumns" />
+	<select id="getActiveRentals" resultMap="com.videorentalsrus.dao.RentalMapper.RentalResultMap" parameterType="Customer">
+		SELECT <include refid="com.videorentalsrus.dao.RentalMapper.rentalColumns" />
 		FROM dbo.rentals as rental
 		JOIN dbo.customers as customer
 		ON rental.rentalCustomerId = customer.customerId

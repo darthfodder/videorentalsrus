@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Rental implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -14,7 +17,11 @@ public class Rental implements Serializable{
 	private LocalDate rentalDate;
 	private LocalDate returnedDate;
 	private LocalDate dueDate;
-	
+	private static final Logger LOG =  LoggerFactory.getLogger(Rental.class);
+	public Rental()
+	{
+		LOG.info("Rental created");
+	}
 	public Integer getRentalId() {
 		return rentalId;
 	}

@@ -10,7 +10,7 @@
 		<result column="title" property="title" />
 		<result column="genre" property="genre" />
 		<result column="year" property="year" />
-		<result column="videoStatus" property="videoStatus" />
+		<result column="videoStatus" property="videoStatus" javaType="com.videorentalsrus.enums.VideoStatus"/>
 		<result column="videoRentalTypeId" property="videoRentalTypeId" />
 	</resultMap>
 	
@@ -27,16 +27,16 @@
 		video.title AS title,
 		video.genre AS genre,
 		video.year AS year,
-		video.videoStatus AS status,
+		video.videoStatus AS videoStatus,
 		video.videoRentalTypeId AS videoRentalTypeId
 	</sql>
 	
 	<sql id="rentalTypeColumns">
-		rentalType.rentalTypeId AS typeId,
-		rentalType.name AS typeName,
+		rentalType.rentalTypeId AS rentalTypeId,
+		rentalType.name AS name,
 		rentalType.rentalDuration AS rentalDuration,
 		rentalType.rentalFee AS rentalFee,
-		rentaltType.dailyLateFee AS dailyLateFee
+		rentalType.dailyLateFee AS dailyLateFee
 	</sql>
 	
 	<select id="getVideo" resultMap="VideoResultMap" parameterType="int">
@@ -61,7 +61,10 @@
 		WHERE rentalType.rentalTypeId = #{rentalTypeId}
 	</select>
 	
-	<insert id="insertRentalType" parameterType="RentalType">
+	<insert id="insertRentalType" parameterType="RentalType" useGeneratedKeys="true" keyProperty="videoId">
+		<selectKey order="AFTER" keyProperty="rentalTypeId" resultType="int">
+			SELECT currval('dbo.rentalTypes_rentalTypeId_seq')
+		</selectKey>
 		INSERT INTO dbo.rentalTypes(name,rentalDuration,rentalFee,dailyLateFee)
 		VALUES(#{name},#{rentalDuration},#{rentalFee},#{dailyLateFee})
 	</insert>
@@ -75,23 +78,24 @@
 		WHERE rentalTypeId = #{rentalTypeId}
 	</update>
 	
-	<select id="getActiveVideos">
+	<select id="getActiveVideos" resultMap="VideoResultMap">
 		SELECT <include refid="videoColumns" />
 		FROM dbo.videos as video
 		WHERE video.videoStatus = 'ACTIVE'
 	</select>
 	
-	<select id="getAvailableVideos">
+	<select id="getAvailableVideos" resultMap="VideoResultMap">
 		SELECT <include refid="videoColumns"/>
 		FROM dbo.videos as video
 			LEFT JOIN dbo.rentals as rental
 			ON video.videoId = rental.rentalVideoID
 		WHERE video.videoId NOT IN
-			(SELECT <include refid="com.videorentalsrus.dao.RentalDao.rentalColumns"/> 
+			(SELECT rental.rentalVideoId 
 			 FROM dbo.rentals as rental
 			 	JOIN dbo.videos as video
 			 	ON rental.rentalVideoId = video.videoId 
 			 WHERE rental.returnedDate IS NULL)
+		AND videoStatus = 'ACTIVE'
 	</select>
 	
 	<select id="findVideosByTitle" resultMap="VideoResultMap">
@@ -113,7 +117,7 @@
 		WHERE video.year = #{year}
 	</select>
 	
-	<select id="findVideosByRentalType" resultMap="VideoResultMap" parameterType="RentalType">
+	<select id="findVideosByRentalType" resultMap="VideoResultMap">
 		SELECT <include refid="videoColumns" />
 		FROM dbo.videos as video
 			INNER JOIN dbo.rentalTypes as rentalType
@@ -122,8 +126,11 @@
 	</select>
 	
 	<insert id="insertVideo" parameterType="Video" useGeneratedKeys="true" keyProperty="videoId">
+		<selectKey keyProperty="videoId" resultType="int">
+			SELECT currval('dbo.videos_videoId_seq')
+		</selectKey>
 		INSERT INTO dbo.videos(title,genre,year,videoStatus,videoRentalTypeId)
-		VALUES(#{title},#{genre},#{year},#{videoStatus},#{videoRentalTypeId})
+		VALUES(#{title},#{genre},#{year},#{videoStatus}::videoStatus,#{videoRentalTypeId})
 	</insert>
 	
 	<update id="updateVideo" parameterType="Video">
@@ -136,8 +143,8 @@
 		WHERE videoId = #{videoId}
 	</update>
 	
-	<select id="getRentalHistory" parameterType="Video" resultMap="com.videorentalsrus.dao.RentalDao.RentalResultMap">
-		SELECT <include refid="com.videorentalsrus.dao.RentalDao.rentalColumns" />
+	<select id="getRentalHistory" parameterType="Video" resultMap="com.videorentalsrus.dao.RentalMapper.RentalResultMap">
+		SELECT <include refid="com.videorentalsrus.dao.RentalMapper.rentalColumns" />
 		FROM dbo.rentals AS rental
 		WHERE rental.rentalVideoId = #{videoId}
 		ORDER BY rental.rentalDate DESC

@@ -2,13 +2,14 @@ package com.videorentalsrus.store;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Entity
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private static final Logger LOG =  LoggerFactory.getLogger(Customer.class);
 	private Integer customerId;
 	private String firstName;
 	private String lastName;
@@ -16,6 +17,12 @@ public class Customer implements Serializable {
 	private String streetAddress;
 	private String zipCode;
 	private Double balance;
+	
+	
+	public Customer()
+	{
+		LOG.info("Customer created");
+	}
 	
 	public Integer getCustomerId() {
 		return customerId;

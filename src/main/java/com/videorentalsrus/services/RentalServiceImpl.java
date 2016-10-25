@@ -7,12 +7,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
 
 import com.videorentalsrus.dao.RentalDao;
 import com.videorentalsrus.store.Customer;
 import com.videorentalsrus.store.Rental;
 import com.videorentalsrus.store.Video;
 
+@Service
 public class RentalServiceImpl implements RentalService {
 
 	@Autowired
@@ -30,6 +33,7 @@ public class RentalServiceImpl implements RentalService {
 			Rental rental = new Rental();
 			LocalDate now = LocalDate.now();
 			LocalDate dueDate = now.plus(Period.ofDays(videoService.getVideoRentalType(video).getRentalDuration()));
+			rental.setRentalDate(now);
 			rental.setDueDate(dueDate);
 			rental.setRentalCustomerId(customer.getCustomerId());
 			rental.setRentalVideoId(video.getVideoId());
@@ -53,6 +57,13 @@ public class RentalServiceImpl implements RentalService {
 			return rental;
 		}
 		return null;
+	}
+	
+	@Override
+	public Rental deleteRental(Rental rental)
+	{
+		rentalDao.deleteRental(rental);
+		return rental;
 	}
 
 	@Override
