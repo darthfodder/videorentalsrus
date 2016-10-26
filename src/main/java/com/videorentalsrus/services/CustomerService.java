@@ -19,7 +19,7 @@ public interface CustomerService {
 	
 	List<Customer> findCustomersByLastName(String lastName);
 	
-	Customer findCustomersByFirstName(String firstName);
+	List<Customer> findCustomersByFirstName(String firstName);
 	
 	Customer findCustomerByStreetAddress(String streetAddress);
 	

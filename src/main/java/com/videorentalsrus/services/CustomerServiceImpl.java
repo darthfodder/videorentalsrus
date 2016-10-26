@@ -50,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer findCustomersByFirstName(String firstName) {
+	public List<Customer> findCustomersByFirstName(String firstName) {
 		return customerDao.findCustomersByFirstName(firstName);
 	}
 	@Override

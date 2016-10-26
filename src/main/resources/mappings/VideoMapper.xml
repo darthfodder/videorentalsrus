@@ -4,7 +4,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.videorentalsrus.dao.VideoDao">
+<mapper namespace="com.videorentalsrus.dao.VideoMapper">
 	<resultMap type="Video" id="VideoResultMap">
 		<id column="videoId" property="videoId" />
 		<result column="title" property="title" />
@@ -147,6 +147,6 @@
 		SELECT <include refid="com.videorentalsrus.dao.RentalMapper.rentalColumns" />
 		FROM dbo.rentals AS rental
 		WHERE rental.rentalVideoId = #{videoId}
-		ORDER BY rental.rentalDate DESC
+		ORDER BY rental.rentalId DESC
 	</select>
 </mapper>

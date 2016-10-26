@@ -4,7 +4,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.videorentalsrus.dao.CustomerDao">
+<mapper namespace="com.videorentalsrus.dao.CustomerMapper">
 	<resultMap type="Customer" id="CustomerResultMap">
 		<id column="customerId" property="customerId" />
 		<result column="firstName" property="firstName" />
@@ -75,7 +75,7 @@
 	
 	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="customerId">
 		INSERT INTO dbo.customers(firstName,lastName,phoneNumber,streetAddress,zipCode,balance)
-		VALUES(#{firstName},#{lastName},#{phoneNumber},#{streetAddress},#{zipCode},0)
+		VALUES(#{firstName},#{lastName},#{phoneNumber},#{streetAddress},#{zipCode},0.0)
 	</insert>
 	
 	<update id="updateCustomer" parameterType="Customer">

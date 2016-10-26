@@ -2,14 +2,11 @@ package com.videorentalsrus.store;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger LOG =  LoggerFactory.getLogger(Customer.class);
 	private Integer customerId;
 	private String firstName;
 	private String lastName;
@@ -18,11 +15,6 @@ public class Customer implements Serializable {
 	private String zipCode;
 	private Double balance;
 	
-	
-	public Customer()
-	{
-		LOG.info("Customer created");
-	}
 	
 	public Integer getCustomerId() {
 		return customerId;
@@ -65,6 +57,26 @@ public class Customer implements Serializable {
 	}
 	public void setBalance(Double balance) {
 		this.balance = balance;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(this == other)
+		{
+			return true;
+		}
+		
+		if(other == null || this.getClass() != other.getClass())
+		{
+			return false;
+		}
+		Customer otherCustomer = (Customer)other;
+		return customerId.equals(otherCustomer.customerId);
+	}
+	
+	@Override
+	public int hashCode() {
+		return customerId == null ? 0 : customerId.hashCode();
 	}
 	
 

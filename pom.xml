@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -39,10 +39,10 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-    		<groupId>org.springframework</groupId>
-    		<artifactId>spring-webmvc</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -54,19 +54,45 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-  			<groupId>org.mybatis</groupId>
-  			<artifactId>mybatis-typehandlers-jsr310</artifactId>
-  			<version>1.0.0</version>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-typehandlers-jsr310</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
 	<build>
+		<pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<artifactId>exec-maven-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<executions>
+					<execution><!-- Run our version calculation script -->
+						<id>Version Calculation</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+							<executable>psql</executable>
+							<arguments>
+								<argument>-p</argument>
+								<argument>5432</argument>
+								<argument>-U</argument>
+								<argument>postgres</argument>
+								<argument>-f</argument>
+								<argument>${basedir}/src/main/resources/schema.sql</argument>
+							</arguments>
+				</configuration>
+			</plugin>
 		</plugins>
+		</pluginManagement>
 	</build>
 </project>
 

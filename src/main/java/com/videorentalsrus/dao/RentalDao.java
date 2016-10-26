@@ -2,9 +2,9 @@ package com.videorentalsrus.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.videorentalsrus.store.Rental;
@@ -15,6 +15,7 @@ public class RentalDao {
 	@Autowired
 	RentalMapper rentalMapper;
 
+	@Cacheable(value = "rental", key = "#rentalId")
 	public Rental getRental(int rentalId) {
 		return rentalMapper.getRental(rentalId);
 	}
@@ -31,11 +32,12 @@ public class RentalDao {
 		rentalMapper.insertRental(rental);
 	}
 
-	@CacheEvict(value = "rentals", allEntries=true)
+	@CacheEvict(value = "rental", key = "#rental.rentalId", beforeInvocation = true)
 	public void updateRental(Rental rental) {
 		rentalMapper.updateRental(rental);
 	}
 
+	@CacheEvict(value = "rental", key = "#rental.rentalId", beforeInvocation = true)
 	public void deleteRental(Rental rental) {
 		rentalMapper.deleteRental(rental);
 	}

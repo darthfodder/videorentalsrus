@@ -3,8 +3,6 @@ package com.videorentalsrus.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,13 +34,11 @@ public class RentalController {
 	@Autowired
 	public CustomerService customerService;
 
-	@Cacheable("rentals")
 	@RequestMapping(value = "/{rentalId}", method = RequestMethod.GET)
 	public @ResponseBody Rental getRental(@PathVariable("rentalId") int rentalId) {
 		return rentalService.getRentalById(rentalId);
 	}
 	
-	@CacheEvict(value = "rentals",key = "#rentalId")
 	@RequestMapping(value = "/{rentalId}/delete", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseEntity<?> deleteRental(@PathVariable("rentalId") int rentalId) {
 		HttpHeaders headers = new HttpHeaders();
@@ -62,6 +58,12 @@ public class RentalController {
 	public @ResponseBody List<Rental> getRentals()
 	{
 		return rentalService.getActiveRentals();
+	}
+	
+	@RequestMapping(value = "/history", method = RequestMethod.GET)
+	public @ResponseBody List<Rental> getRentalHistory()
+	{
+		return rentalService.getRentalHistory();
 	}
 	
 	@RequestMapping(value = "/rent", method = RequestMethod.POST)
@@ -93,8 +95,8 @@ public class RentalController {
 		return new ResponseEntity<String>("Something went wrong when creating the rental",headers,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@RequestMapping(value="/return", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> returnVideo(@RequestParam(value = "videoId",required = true)int videoId)
+	@RequestMapping(value="/return/{videoId}", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> returnVideo(@PathVariable("videoId")int videoId)
 	{
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

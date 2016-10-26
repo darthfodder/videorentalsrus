@@ -42,5 +42,24 @@ public class RentalType implements Serializable{
 	public void setDailyLateFee(Double dailyLateFee) {
 		this.dailyLateFee = dailyLateFee;
 	}
-
+	
+	@Override
+	public boolean equals(Object other) {
+		if(this == other)
+		{
+			return true;
+		}
+		
+		if(other == null || this.getClass() != other.getClass())
+		{
+			return false;
+		}
+		RentalType otherRentalType = (RentalType)other;
+		return rentalTypeId.equals(otherRentalType.rentalTypeId);
+	}
+	
+	@Override
+	public int hashCode() {
+		return rentalTypeId == null ? 0 : rentalTypeId.hashCode();
+	}
 }

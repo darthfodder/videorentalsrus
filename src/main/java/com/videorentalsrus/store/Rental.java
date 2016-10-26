@@ -17,11 +17,6 @@ public class Rental implements Serializable{
 	private LocalDate rentalDate;
 	private LocalDate returnedDate;
 	private LocalDate dueDate;
-	private static final Logger LOG =  LoggerFactory.getLogger(Rental.class);
-	public Rental()
-	{
-		LOG.info("Rental created");
-	}
 	public Integer getRentalId() {
 		return rentalId;
 	}
@@ -57,6 +52,25 @@ public class Rental implements Serializable{
 	}
 	public void setDueDate(LocalDate dueDate) {
 		this.dueDate = dueDate;
+	}
+	@Override
+	public boolean equals(Object other) {
+		if(this == other)
+		{
+			return true;
+		}
+		
+		if(other == null || this.getClass() != other.getClass())
+		{
+			return false;
+		}
+		Rental otherRental = (Rental)other;
+		return rentalId.equals(otherRental.rentalId);
+	}
+	
+	@Override
+	public int hashCode() {
+		return rentalId == null ? 0 : rentalId.hashCode();
 	}
 	
 }

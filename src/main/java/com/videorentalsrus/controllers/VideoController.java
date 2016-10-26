@@ -4,12 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.videorentalsrus.services.VideoService;
+import com.videorentalsrus.store.Rental;
 import com.videorentalsrus.store.RentalType;
 import com.videorentalsrus.store.Video;
 
@@ -39,27 +36,24 @@ public class VideoController {
 		return videoService.getVideoById(videoId);
 	}
 
-	@Cacheable("videos")
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public @ResponseBody List<Video> getVideos(@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "genre", required = false) String genre,
 			@RequestParam(value = "year", required = false) Integer year,
 			@RequestParam(value = "rentalType", required = false) String rentalType) {
 		List<Video> videos = videoService.getAllVideos();
-		return filterVideos(videos,title,genre,year,rentalType);
+		return filterVideos(videos, title, genre, year, rentalType);
 	}
 
-	@Cacheable("videos")
 	@RequestMapping(value = "/available", method = RequestMethod.GET)
 	public @ResponseBody List<Video> getAvailableVideos(@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "genre", required = false) String genre,
 			@RequestParam(value = "year", required = false) Integer year,
 			@RequestParam(value = "rentalType", required = false) String rentalType) {
 		List<Video> videos = videoService.getAllAvailableVideos();
-		return filterVideos(videos,title,genre,year,rentalType);
+		return filterVideos(videos, title, genre, year, rentalType);
 	}
 
-	@Cacheable("videos")
 	@RequestMapping(value = "/active", method = RequestMethod.GET)
 	public @ResponseBody List<Video> getActiveVideos(@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "genre", required = false) String genre,
@@ -67,12 +61,11 @@ public class VideoController {
 			@RequestParam(value = "rentalType", required = false) String rentalType) {
 		List<Video> videos = videoService.getAllActiveVideos();
 
-		return filterVideos(videos,title,genre,year,rentalType);
+		return filterVideos(videos, title, genre, year, rentalType);
 	}
 
-	@CacheEvict(value="rentalTypes", key = "#rentalType.rentalTypeId")
-	@RequestMapping(value = "/rentalTypes/save", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<RentalType> addRentalType(@RequestBody RentalType rentalType) {
+	@RequestMapping(value = "/rentalTypes/save", method = RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<RentalType> saveRentalType(@RequestBody RentalType rentalType) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpStatus successStatus;
@@ -90,13 +83,16 @@ public class VideoController {
 		}
 	}
 
-	@Cacheable("rentalTypes")
 	@RequestMapping(value = "/rentalTypes", method = RequestMethod.GET)
 	public @ResponseBody List<RentalType> getRentalTypes() {
 		return videoService.getRentalTypes();
 	}
 
-	@CacheEvict(value="videos", key="#video.videoId")
+	@RequestMapping(value = "/{videoId}/rentalHistory", method = RequestMethod.GET)
+	public @ResponseBody List<Rental> getRentalHistory(@PathVariable("videoId") int videoId) {
+		return videoService.getRentalHistory(videoService.getVideoById(videoId));
+	}
+
 	@RequestMapping(value = "/save", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<Video> saveVideo(@RequestBody Video video) {
 		HttpHeaders headers = new HttpHeaders();
@@ -114,9 +110,8 @@ public class VideoController {
 			return new ResponseEntity<Video>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	private List<Video> filterVideos(List<Video> videos, String title,String genre,Integer year,String rentalType)
-	{
+
+	private List<Video> filterVideos(List<Video> videos, String title, String genre, Integer year, String rentalType) {
 		Stream<Video> filteredVideos = videos.stream();
 
 		if (title != null) {

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.videorentalsrus.dao.RentalDao;
@@ -60,6 +61,9 @@ public class RentalServiceImpl implements RentalService {
 	}
 	
 	@Override
+	@Caching(evict = { @CacheEvict(value = "rentals", key = "#rental.rentalId", beforeInvocation = true),
+			@CacheEvict(value = "customer_rentalhistory", key = "#rental.rentalCustomerId"),
+			@CacheEvict(value = "customer_rentals", key = "#rental.rentalId") })
 	public Rental deleteRental(Rental rental)
 	{
 		rentalDao.deleteRental(rental);
