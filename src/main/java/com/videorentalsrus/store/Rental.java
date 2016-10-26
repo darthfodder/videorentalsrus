@@ -2,10 +2,7 @@ package com.videorentalsrus.store;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Rental implements Serializable{
 
