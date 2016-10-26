@@ -1,0 +1,31 @@
+version: '2'
+
+networks:
+  build-docker-network:
+    driver: bridge
+
+services:
+  redis:
+    container_name: my-redis
+    image: redis
+    # Is the network bridge required by windows?
+    # networks:
+    #  - build-docker-network
+    ports:
+     - "6379:6379"
+  redisCommander:
+    image: tenstartups/redis-commander
+    #For OSX you need to point the host to computer hostname
+    command: --redis-host my-redis
+    #  command: --redis-host localredis
+    #command: --redis-host 192.168.99.100
+    links:
+      - redis:redis
+    ports:
+      - "8081:8081"
+  postgres:
+    image: postgres:9
+    networks:
+     - build-docker-network
+    ports:
+     - "5432:5432"
