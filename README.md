@@ -10,5 +10,5 @@ and Postgresql user defined functions/anonymous functions don't get along
   * Init will create some starter data
   * ExampleGet has a bunch of example GET requests
   * ExampleRentals can be run individually or as a group. There are two rental creation requests and one return rental
-    request that will return the second rental
+    request that will return(as in "turn in") the second rental
 
