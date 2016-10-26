@@ -2,7 +2,7 @@
 
 ## Setup instructions
 
-1. Make sure you have a local instance of postgresql(port 5332) and redis running, and the Postgres JDBC driver installed
+1. Make sure you have a local instance of postgresql(port 5332) and redis running, and the Postgres JDBC driver installed. You may also need to add psql to your path.
 2. If your postgres user for postgresql has a password, add spring.datasource.password=[password] to application.properties
 3. Run mvn exec:exec. This will create the schema for this project. Had to resort to this because Spring
 and Postgresql user defined functions/anonymous functions don't get along
