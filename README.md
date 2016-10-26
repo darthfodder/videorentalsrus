@@ -2,7 +2,7 @@
 
 ## Setup instructions
 
-1. Make sure you have a local instance of postgresql and redis running
+1. Make sure you have a local instance of postgresql(port 5332) and redis running
 2. Run mvn exec:exec. This will create the schema for this project. Had to resort to this because Spring
 and Postgresql user defined functions/anonymous functions don't get along
 3. Run mvn spring-boot:run
